@@ -1,0 +1,9 @@
+shadow = false
+borders = "outset"
+
+[colors]
+  background = "black"
+  view = "black"
+  primary = "white"
+  title_primary = "light white"
+  highlight = "light black"
