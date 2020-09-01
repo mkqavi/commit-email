@@ -1,12 +1,40 @@
-use config::{Config, File};
 use git2::{ConfigLevel, Repository};
+use serde::{Deserialize, Serialize};
 use std::env;
 use std::error;
 use std::fs;
 use std::io;
+use std::path::PathBuf;
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct Config {
+    ignore: Vec<PathBuf>,
+}
+
+impl Config {
+    fn add_path(&mut self, path: &PathBuf) {
+        if !self.is_ignored(&path) {
+            self.ignore.push(path.clone());
+        }
+    }
+
+    fn is_ignored(&self, path: &PathBuf) -> bool {
+        self.ignore.contains(&path)
+    }
+}
 
 fn main() -> Result<(), Box<dyn error::Error>> {
-    let config = read_config()?;
+    let mut config = read_config()?;
+
+    config.add_path(&PathBuf::from("/home/mkqavi"));
+
+    if config.is_ignored(&PathBuf::from("/home/mkqavi")) {
+        println!("ignored");
+    }
+
+    println!("{:?}", config);
+
+    save_config(&config)?;
 
     print_user_email()?;
 
@@ -33,14 +61,30 @@ fn read_config() -> Result<Config, Box<dyn error::Error>> {
     let mut config_file = config_dir;
     config_file.push("commit-email.toml");
 
-    if fs::read(&config_file).is_err() {
-        fs::File::create(&config_file)?;
-    }
+    let config_string = match fs::read_to_string(&config_file) {
+        Err(_) => {
+            fs::File::create(&config_file)?;
+            "".to_string()
+        }
+        Ok(content) => content,
+    };
 
-    let mut config = Config::default();
-    config.merge(File::from(config_file))?;
+    let config: Config = match toml::from_str(&config_string) {
+        Ok(config) => config,
+        Err(_) => Config::default(),
+    };
 
     Ok(config)
+}
+
+fn save_config(config: &Config) -> Result<(), Box<dyn error::Error>> {
+    let mut config_path = dirs::config_dir().unwrap();
+
+    config_path.push("commit-email/commit-email.toml");
+
+    fs::write(config_path, toml::to_string_pretty(config)?)?;
+
+    Ok(())
 }
 
 fn print_user_email() -> Result<(), Box<dyn error::Error>> {
