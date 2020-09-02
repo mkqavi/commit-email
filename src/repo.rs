@@ -30,6 +30,13 @@ impl Repo {
         }
     }
 
+    pub fn set_local_email(&self, email: &str) -> Result<(), git2::Error> {
+        self.repository
+            .config()?
+            .open_level(ConfigLevel::Local)?
+            .set_str("user.email", email)
+    }
+
     pub fn get_remote_url(&self) -> Option<Url> {
         let remote = match self.repository.find_remote("origin") {
             Ok(remote) => remote,

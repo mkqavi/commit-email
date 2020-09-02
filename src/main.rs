@@ -31,7 +31,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     let mut sv = SelectView::new();
     sv.add_all(config.get_emails());
     sv.set_on_submit(move |ui, email| {
-        submit_email(ui, email, &mut config.clone(), config_url.clone())
+        submit_email(ui, email, &mut config.clone(), &repo, config_url.clone())
     });
 
     ui.add_layer(Dialog::around(sv).title("Please select an email for your commit"));
@@ -45,6 +45,7 @@ fn submit_email(
     ui: &mut Cursive,
     email: &Option<String>,
     config: &mut Config,
+    repo: &Repo,
     config_url: Option<Url>,
 ) {
     ui.quit();
@@ -52,9 +53,7 @@ fn submit_email(
     match email {
         Some(email) => {
             config.add_email(email);
-
-            // Write to .git/config
-            println!("Writing {} to .git/config", email);
+            repo.set_local_email(email).unwrap();
         }
         None => {
             if let Some(url) = &config_url {
