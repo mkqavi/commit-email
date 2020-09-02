@@ -1,4 +1,4 @@
-use super::get_global_email;
+use crate::Repo;
 use serde::{Deserialize, Serialize};
 use std::error;
 use std::fs;
@@ -64,12 +64,12 @@ impl Config {
     }
 
     pub fn get_emails(&self) -> Vec<(String, Option<String>)> {
-        let global_email = match get_global_email() {
-            Ok(email) => email,
-            Err(error) => panic!("{}", error),
-        };
+        let global_email = Repo::get_global_email();
 
-        let mut email_tuple = vec![(format!("Always use Global <{}>", &global_email), None)];
+        let mut email_tuple = match global_email {
+            Some(email) => vec![(format!("Always use Global <{}>", &email), None)],
+            None => Vec::new(),
+        };
         email_tuple.append(
             &mut self
                 .emails

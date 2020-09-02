@@ -1,19 +1,18 @@
 use config::Config;
 use cursive::views::{Dialog, SelectView};
 use cursive::Cursive;
-use git2::{ConfigLevel, Repository};
-use repo_cli::ScpPath;
+use repo::Repo;
 use std::env;
 use std::error;
-use std::path::PathBuf;
 use url::Url;
 
 mod config;
+mod repo;
 
 fn main() -> Result<(), Box<dyn error::Error>> {
     let config = Config::load()?;
-    let current_dir = env::current_dir()?;
-    let config_url = get_repository_url(&current_dir);
+    let repo = Repo::new(&env::current_dir()?)?;
+    let config_url = repo.get_remote_url();
 
     if let Some(url) = &config_url {
         if config.ignores(&url) {
@@ -21,7 +20,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         }
     }
 
-    if get_repository_email(&current_dir)?.is_some() {
+    if repo.get_local_email().is_some() {
         return Ok(());
     }
 
@@ -40,47 +39,6 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     ui.run();
 
     Ok(())
-}
-
-fn get_repository_email(current_dir: &PathBuf) -> Result<Option<String>, Box<dyn error::Error>> {
-    let repo = Repository::open(current_dir)?;
-
-    let config = repo.config()?;
-
-    let email_entry = match config.get_entry("user.email") {
-        Ok(entry) => entry,
-        Err(error) => panic!("{}", error),
-    };
-
-    match email_entry.level() {
-        ConfigLevel::Local => Ok(Some(email_entry.value().unwrap().to_string())),
-        _ => Ok(None),
-    }
-}
-
-fn get_repository_url(current_dir: &PathBuf) -> Option<Url> {
-    let repo = Repository::open(current_dir).ok()?;
-
-    let remote = match repo.find_remote("origin") {
-        Ok(remote) => remote,
-        Err(_) => match repo.remotes().ok()?.get(0) {
-            Some(remote_name) => repo.find_remote(remote_name).ok()?,
-            None => return None,
-        },
-    };
-
-    let url_string = remote.url()?;
-
-    match ScpPath::parse(url_string) {
-        Ok(scp_path) => Some(scp_path.to_url()),
-        Err(_) => Url::parse(url_string).ok(),
-    }
-}
-
-fn get_global_email() -> Result<String, Box<dyn error::Error>> {
-    let config = git2::Config::open_default()?;
-
-    Ok(config.get_string("user.email")?)
 }
 
 fn submit_email(
