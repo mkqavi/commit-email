@@ -1,4 +1,5 @@
 use crate::Repo;
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::error;
 use std::fs;
@@ -14,11 +15,11 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn load() -> Result<Config, Box<dyn error::Error>> {
+    pub fn load() -> Result<Config> {
         let mut config_dir = match dirs::config_dir() {
             Some(path) => path,
             None => {
-                return Err(Box::new(io::Error::new(
+                return Err(anyhow::Error::from(io::Error::new(
                     io::ErrorKind::NotFound,
                     "Could not find the config directory",
                 )))

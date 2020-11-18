@@ -1,17 +1,30 @@
+use anyhow::{bail, Result};
 use config::Config;
 use cursive::views::{Dialog, SelectView};
 use cursive::Cursive;
 use repo::Repo;
 use std::env;
-use std::error;
 use url::Url;
 
 mod config;
 mod repo;
 
-fn main() -> Result<(), Box<dyn error::Error>> {
+fn main() -> Result<()> {
     let config = Config::load()?;
-    let repo = Repo::new(&env::current_dir()?)?;
+    let current_dir = env::current_dir()?;
+    let mut ancestors = current_dir.ancestors();
+    let repo = loop {
+        match ancestors.next() {
+            Some(path) => {
+                let repo_result = Repo::new(&path.to_path_buf());
+                if let Ok(repo) = repo_result {
+                    break repo;
+                }
+            }
+            None => bail!("Test"),
+        }
+    };
+
     let config_url = repo.get_remote_url();
 
     if let Some(url) = &config_url {
