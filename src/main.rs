@@ -38,7 +38,7 @@ fn main() -> Result<()> {
     }
 
     // Create UI
-    let mut ui = cursive::default();
+    let mut ui = cursive::crossterm()?;
     ui.load_toml(include_str!("../assets/style.toml")).unwrap();
 
     let mut sv = SelectView::new();
