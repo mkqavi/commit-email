@@ -22,7 +22,7 @@ fn main() -> Result<()> {
                     break repo;
                 }
             }
-            None => bail!("Test"),
+            None => bail!("Not in a repo"),
         }
     };
 
