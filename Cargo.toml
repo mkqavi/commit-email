@@ -15,7 +15,7 @@ git2 = "0.13.9"
 dirs = "3.0.1"
 serde = { version = "1.0.115", features = ["derive"] }
 toml = "0.5.6"
-cursive = { version = "0.15.0", features = ["crossterm-backend", "toml"], default_features = false }
+cursive = { version = "0.16.3", features = ["crossterm-backend", "toml"], default_features = false }
 url = { version = "2.2.0", features = ["serde"] }
 repo-cli = "0.1.2"
 anyhow = "1.0.34"
