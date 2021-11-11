@@ -28,7 +28,7 @@ fn main() -> Result<()> {
     let config_url = repo.get_remote_url();
 
     if let Some(url) = &config_url {
-        if config.ignores(&url) {
+        if config.ignores(url) {
             return Ok(());
         }
     }
@@ -70,7 +70,7 @@ fn submit_email(
         }
         None => {
             if let Some(url) = &config_url {
-                config.add_ignore_url(&url);
+                config.add_ignore_url(url);
             }
         }
     }

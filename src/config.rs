@@ -52,7 +52,7 @@ impl Config {
     }
 
     pub fn add_ignore_url(&mut self, url: &Url) {
-        if !self.ignores(&url) {
+        if !self.ignores(url) {
             self.ignore.push(url.clone());
         }
     }
@@ -83,7 +83,7 @@ impl Config {
     }
 
     pub fn ignores(&self, url: &Url) -> bool {
-        self.ignore.contains(&url)
+        self.ignore.contains(url)
     }
 
     pub fn save(&self) -> Result<(), Box<dyn error::Error>> {
