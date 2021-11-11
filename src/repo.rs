@@ -1,6 +1,6 @@
 use git2::{Config, ConfigLevel, Error, Repository};
 use repo_cli::ScpPath;
-use std::path::PathBuf;
+use std::path::Path;
 use url::Url;
 
 pub struct Repo {
@@ -8,7 +8,7 @@ pub struct Repo {
 }
 
 impl Repo {
-    pub fn new(path: &PathBuf) -> Result<Repo, Error> {
+    pub fn new(path: &Path) -> Result<Repo, Error> {
         Ok(Repo {
             repository: Repository::open(path)?,
         })
