@@ -1,5 +1,6 @@
 use anyhow::{bail, Result};
 use config::Config;
+use cursive::event::Key;
 use cursive::views::{Dialog, SelectView};
 use cursive::Cursive;
 use repo::Repo;
@@ -21,7 +22,7 @@ fn main() -> Result<()> {
                     break repo;
                 }
             }
-            None => bail!("Test"),
+            None => bail!("Not in a repo"),
         }
     };
 
@@ -40,6 +41,8 @@ fn main() -> Result<()> {
     // Create UI
     let mut ui = cursive::crossterm();
     ui.load_toml(include_str!("../assets/style.toml")).unwrap();
+    ui.add_global_callback(Key::Esc, |app| app.quit());
+    ui.add_global_callback('q', |app| app.quit());
 
     let mut sv = SelectView::new();
     sv.add_all(config.get_emails());
