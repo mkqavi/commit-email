@@ -17,7 +17,7 @@ fn main() -> Result<()> {
     let repo = loop {
         match ancestors.next() {
             Some(path) => {
-                let repo_result = Repo::new(&path.to_path_buf());
+                let repo_result = Repo::new(path);
                 if let Ok(repo) = repo_result {
                     break repo;
                 }
