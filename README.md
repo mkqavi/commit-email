@@ -28,8 +28,10 @@ This script runs commit-email every time you run `git commit`.
 function git() {
   if [ "$1" = "commit" ]
   then
-    # Path to commit-email binary
+    # Path to commit-email binary (Arch)
     /usr/bin/commit-email
+    # Path to commit-email binary (Cargo)
+    # $HOME/.cargo/bin/commit-email
   fi;
   command git $@
 }
