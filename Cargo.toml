@@ -13,7 +13,7 @@ edition = "2021"
 [dependencies]
 git2 = "0.13.25"
 dirs = "4.0.0"
-serde = { version = "1.0.138", features = ["derive"] }
+serde = { version = "1.0.139", features = ["derive"] }
 toml = "0.5.9"
 cursive = { version = "0.18.0", features = ["crossterm-backend", "toml"], default_features = false }
 url = { version = "2.2.2", features = ["serde"] }
