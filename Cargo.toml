@@ -14,7 +14,7 @@ edition = "2021"
 git2 = "0.13.25"
 dirs = "4.0.0"
 serde = { version = "1.0.147", features = ["derive"] }
-toml = "0.5.9"
+toml = "0.7.1"
 cursive = { version = "0.20.0", features = ["crossterm-backend", "toml"], default_features = false }
 url = { version = "2.3.1", features = ["serde"] }
 repo-cli = "0.1.3"
