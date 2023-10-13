@@ -4,11 +4,13 @@ use cursive::event::Key;
 use cursive::views::{Dialog, SelectView};
 use cursive::Cursive;
 use repo::Repo;
+use scp::ScpPath;
 use std::env;
 use url::Url;
 
 mod config;
 mod repo;
+mod scp;
 
 fn main() -> Result<()> {
     let config = Config::load()?;
