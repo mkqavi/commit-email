@@ -1,5 +1,5 @@
+use crate::ScpPath;
 use git2::{Config, ConfigLevel, Error, Repository};
-use repo_cli::ScpPath;
 use std::path::Path;
 use url::Url;
 
