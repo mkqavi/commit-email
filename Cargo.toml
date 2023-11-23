@@ -19,6 +19,6 @@ cursive = { version = "0.20.0", features = [
   "crossterm-backend",
   "toml",
 ], default_features = false }
-url = { version = "2.4.1", features = ["serde"] }
+url = { version = "2.5.0", features = ["serde"] }
 anyhow = "1.0.75"
 regex = "1.10.2"
