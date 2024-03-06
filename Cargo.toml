@@ -1,6 +1,6 @@
 [package]
 name = "commit-email"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Marvin König <dev@mkqavi.com>"]
 license = "MIT"
 description = "A tool that reminds you to commit with the correct email address"
@@ -16,8 +16,8 @@ dirs = "5.0.1"
 serde = { version = "1.0.197", features = ["derive"] }
 toml = "0.8.10"
 cursive = { version = "0.20.0", features = [
-  "crossterm-backend",
-  "toml",
+    "crossterm-backend",
+    "toml",
 ], default_features = false }
 url = { version = "2.5.0", features = ["serde"] }
 anyhow = "1.0.80"
