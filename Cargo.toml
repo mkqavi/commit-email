@@ -21,4 +21,4 @@ cursive = { version = "0.20.0", features = [
 ], default-features = false }
 url = { version = "2.5.2", features = ["serde"] }
 anyhow = "1.0.86"
-regex = "1.10.5"
+regex = "1.10.6"
