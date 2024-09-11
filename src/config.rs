@@ -43,10 +43,7 @@ impl Config {
             Ok(content) => content,
         };
 
-        let config: Config = match toml::from_str(&config_string) {
-            Ok(config) => config,
-            Err(_) => Config::default(),
-        };
+        let config: Config = toml::from_str(&config_string).unwrap_or_default();
 
         Ok(config)
     }
