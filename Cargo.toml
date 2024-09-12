@@ -20,5 +20,5 @@ cursive = { version = "0.20.0", features = [
     "toml",
 ], default-features = false }
 url = { version = "2.5.2", features = ["serde"] }
-anyhow = "1.0.87"
+anyhow = "1.0.88"
 regex = "1.10.6"
