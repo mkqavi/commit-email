@@ -1,16 +1,20 @@
-use crate::ScpPath;
-use git2::{Config, ConfigLevel, Error, Repository};
-use std::path::Path;
+use crate::{repo_error::RepoError, ScpPath};
+use git2::{Config, ConfigLevel, Repository};
+use std::{
+    path::Path,
+    sync::{Arc, Mutex, MutexGuard},
+};
 use url::Url;
 
+#[derive(Clone)]
 pub struct Repo {
-    repository: Repository,
+    repository: Arc<Mutex<Repository>>,
 }
 
 impl Repo {
-    pub fn new(path: &Path) -> Result<Repo, Error> {
+    pub fn new(path: &Path) -> Result<Repo, git2::Error> {
         Ok(Repo {
-            repository: Repository::open(path)?,
+            repository: Arc::new(Mutex::new(Repository::open(path)?)),
         })
     }
 
@@ -21,7 +25,7 @@ impl Repo {
     }
 
     pub fn get_local_email(&self) -> Option<String> {
-        let config = self.repository.config().ok()?;
+        let config = self.repository.lock().ok()?.config().ok()?;
         let email_entry = config.get_entry("user.email").ok()?;
 
         match email_entry.level() {
@@ -30,18 +34,26 @@ impl Repo {
         }
     }
 
-    pub fn set_local_email(&self, email: &str) -> Result<(), Error> {
+    pub fn set_local_email<'a>(
+        &'a self,
+        email: &str,
+    ) -> Result<(), RepoError<MutexGuard<'a, Repository>>> {
         self.repository
+            .lock()?
             .config()?
             .open_level(ConfigLevel::Local)?
-            .set_str("user.email", email)
+            .set_str("user.email", email)?;
+
+        Ok(())
     }
 
     pub fn get_remote_url(&self) -> Option<Url> {
-        let remote = match self.repository.find_remote("origin") {
+        let locked_repo = self.repository.lock().ok()?;
+
+        let remote = match locked_repo.find_remote("origin") {
             Ok(remote) => remote,
-            Err(_) => match self.repository.remotes().ok()?.get(0) {
-                Some(remote_name) => self.repository.find_remote(remote_name).ok()?,
+            Err(_) => match locked_repo.remotes().ok()?.get(0) {
+                Some(remote_name) => locked_repo.find_remote(remote_name).ok()?,
                 None => return None,
             },
         };

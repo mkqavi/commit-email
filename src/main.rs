@@ -10,6 +10,7 @@ use url::Url;
 
 mod config;
 mod repo;
+mod repo_error;
 mod scp;
 
 fn main() -> Result<()> {
@@ -66,12 +67,17 @@ fn submit_email(
     repo: &Repo,
     config_url: Option<Url>,
 ) {
-    ui.quit();
-
     match email {
         Some(email) => {
             config.add_email(email);
-            repo.set_local_email(email).unwrap();
+            if let Err(e) = repo.set_local_email(email) {
+                ui.add_layer(
+                    Dialog::text(format!("Error setting email: {}", e))
+                        .button("Oh no!", |ui| ui.quit()),
+                );
+
+                return;
+            }
         }
         None => {
             if let Some(url) = &config_url {
@@ -80,5 +86,12 @@ fn submit_email(
         }
     }
 
-    config.save().unwrap();
+    if let Err(e) = config.save() {
+        ui.add_layer(
+            Dialog::text(format!("Error saving config: {}", e)).button("Oh no!", |ui| ui.quit()),
+        );
+        return;
+    }
+
+    ui.quit();
 }
