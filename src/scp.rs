@@ -1,5 +1,6 @@
 /**
  * Copyright 2021 EdenEast
+ * Modifications Copyright 2024 Marvin König
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,10 +74,9 @@ impl ScpPath {
     }
 }
 
-#[allow(clippy::from_over_into)]
-impl Into<Url> for ScpPath {
-    fn into(self) -> Url {
-        self.to_url()
+impl From<ScpPath> for Url {
+    fn from(scp: ScpPath) -> Self {
+        scp.to_url()
     }
 }
 
