@@ -29,6 +29,7 @@
               rustfmt
               cargo
               clippy
+              rust-analyzer
 
               # Required by openssl-sys crate
               pkg-config
@@ -37,6 +38,8 @@
               nil
               nixfmt
             ];
+
+            RUST_SRC_PATH = pkgs.rustPlatform.rustLibSrc;
           };
         }
       );
