@@ -1,8 +1,8 @@
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use config::Config;
+use cursive::Cursive;
 use cursive::event::Key;
 use cursive::views::{Dialog, SelectView};
-use cursive::Cursive;
 use repo::Repo;
 use scp::ScpPath;
 use std::env;
@@ -31,10 +31,10 @@ fn main() -> Result<()> {
 
     let config_url = repo.get_remote_url();
 
-    if let Some(url) = &config_url {
-        if config.ignores(url) {
-            return Ok(());
-        }
+    if let Some(url) = &config_url
+        && config.ignores(url)
+    {
+        return Ok(());
     }
 
     if repo.get_local_email().is_some() {
