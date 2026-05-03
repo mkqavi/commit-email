@@ -11,46 +11,28 @@ jobs:
   clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.1
       - name: Setup Rust with clippy
-        uses: actions-rs/toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1.16.0
         with:
-          toolchain: stable
-          profile: minimal
-          override: true
           components: clippy
       - name: Run clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: -- -D warnings
+        run: cargo clippy -- -D warnings
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Rust with rustfmt
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.1
+      - name: Setup Rust with cargo
+        uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1.16.0
         with:
-          toolchain: stable
-          profile: minimal
-          override: true
           components: rustfmt
       - name: Run rustfmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+        run: cargo fmt --all -- --check
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-          override: true
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.1
+      - name: Setup Rust with cargo
+        uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1.16.0
       - name: Run tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
+        run: cargo test
