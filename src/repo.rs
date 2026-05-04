@@ -1,4 +1,4 @@
-use crate::{repo_error::RepoError, ScpPath};
+use crate::{ScpPath, repo_error::RepoError};
 use git2::{Config, ConfigLevel, Repository};
 use std::{
     path::Path,

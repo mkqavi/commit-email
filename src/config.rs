@@ -22,7 +22,7 @@ impl Config {
                 return Err(anyhow::Error::from(io::Error::new(
                     io::ErrorKind::NotFound,
                     "Could not find the config directory",
-                )))
+                )));
             }
         };
 
