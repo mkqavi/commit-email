@@ -7,3 +7,6 @@
 
 # Ignore direnv directory
 .direnv/
+
+# Ignore nix build results
+/result

@@ -52,10 +52,11 @@ impl Repo {
 
         let remote = match locked_repo.find_remote("origin") {
             Ok(remote) => remote,
-            Err(_) => match locked_repo.remotes().ok()?.get(0).ok()? {
-                Some(remote_name) => locked_repo.find_remote(remote_name).ok()?,
-                None => return None,
-            },
+            Err(_) => {
+                let remotes = locked_repo.remotes().ok()?;
+                let remote_name = remotes.get(0).ok()??;
+                locked_repo.find_remote(remote_name).ok()?
+            }
         };
 
         Repo::parse_url_string(remote.url().ok()?)
