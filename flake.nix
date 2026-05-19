@@ -3,10 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs }:
+    {
+      self,
+      nixpkgs,
+      fenix,
+    }:
     let
       systems = [
         "x86_64-linux"
@@ -21,15 +30,20 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+
+          rustToolchain = fenix.packages.${system}.stable.withComponents [
+            "rustc"
+            "rust-src"
+            "rustfmt"
+            "cargo"
+            "clippy"
+            "rust-analyzer"
+          ];
         in
         {
           default = pkgs.mkShell {
             packages = with pkgs; [
-              rustc
-              rustfmt
-              cargo
-              clippy
-              rust-analyzer
+              rustToolchain
 
               # Required by openssl-sys crate
               pkg-config
