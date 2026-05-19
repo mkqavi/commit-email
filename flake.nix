@@ -45,10 +45,6 @@
             packages = with pkgs; [
               rustToolchain
 
-              # Required by openssl-sys crate
-              pkg-config
-              openssl
-
               nil
               nixfmt
             ];
