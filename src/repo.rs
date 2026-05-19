@@ -29,7 +29,7 @@ impl Repo {
         let email_entry = config.get_entry("user.email").ok()?;
 
         match email_entry.level() {
-            ConfigLevel::Local => email_entry.value().map(|s| s.to_string()),
+            ConfigLevel::Local => email_entry.value().ok().map(|s| s.to_string()),
             _ => None,
         }
     }
@@ -52,13 +52,13 @@ impl Repo {
 
         let remote = match locked_repo.find_remote("origin") {
             Ok(remote) => remote,
-            Err(_) => match locked_repo.remotes().ok()?.get(0) {
+            Err(_) => match locked_repo.remotes().ok()?.get(0).ok()? {
                 Some(remote_name) => locked_repo.find_remote(remote_name).ok()?,
                 None => return None,
             },
         };
 
-        Repo::parse_url_string(remote.url()?)
+        Repo::parse_url_string(remote.url().ok()?)
     }
 
     fn parse_url_string(url_string: &str) -> Option<Url> {
