@@ -65,7 +65,7 @@ impl Config {
         let global_email = Repo::get_global_email();
 
         let mut email_tuple = match global_email {
-            Some(email) => vec![(format!("Always use Global <{}>", &email), None)],
+            Some(email) => vec![(format!("Always use Global <{}>", email), None)],
             None => Vec::new(),
         };
         email_tuple.append(
