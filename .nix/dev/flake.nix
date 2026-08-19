@@ -2,9 +2,7 @@
   description = "Development environment for commit-email";
 
   inputs = {
-    root.url = "path:../../";
-
-    nixpkgs.follows = "root/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     fenix = {
       url = "github:nix-community/fenix";
@@ -14,10 +12,9 @@
 
   outputs =
     {
-      self,
-      root,
       nixpkgs,
       fenix,
+      ...
     }:
     let
       systems = [

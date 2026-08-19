@@ -2,7 +2,7 @@
   description = "Packages for commit-email";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     rust_1_79_0.url = "github:NixOS/nixpkgs/c3392ad349a5227f4a3464dce87bcc5046692fce";
   };
 
