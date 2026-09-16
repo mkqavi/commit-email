@@ -3,20 +3,17 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    rust_1_79_0.url = "github:NixOS/nixpkgs/c3392ad349a5227f4a3464dce87bcc5046692fce";
   };
 
   outputs =
     {
-      self,
       nixpkgs,
-      rust_1_79_0,
+      ...
     }:
     let
       systems = [
         "x86_64-linux"
         "aarch64-linux"
-        "x86_64-darwin"
         "aarch64-darwin"
       ];
       forAllSystems =
@@ -24,48 +21,45 @@
     in
     {
       packages = forAllSystems (
-        system: pkgs: {
-          default = pkgs.rustPlatform.buildRustPackage {
+        _: pkgs:
+        let
+          sharedPackageInfo = {
             pname = "commit-email";
-            version = "0.2.2+main";
-            src = ./.;
-
-            cargoLock = {
-              lockFile = ./Cargo.lock;
+            version = "0.3.0";
+            meta = {
+              description = "A tool that reminds you to commit with the correct email address";
+              homepage = "https://github.com/mkqavi/commit-email";
+              license = pkgs.lib.licenses.mit;
             };
           };
-
-          stable =
-            let
-              rustPkgs = rust_1_79_0.legacyPackages.${system};
-            in
-            rustPkgs.rustPlatform.buildRustPackage rec {
-              pname = "commit-email";
-              version = "0.2.1";
-              src = rustPkgs.fetchFromGitHub {
+        in
+        {
+          default = pkgs.rustPlatform.buildRustPackage (
+            finalAttrs:
+            sharedPackageInfo
+            // {
+              src = pkgs.fetchFromGitHub {
                 owner = "mkqavi";
                 repo = "commit-email";
-                rev = "v${version}";
-                hash = "sha256-xMUulFLYW+txcb0pjaME4mMs+jaCigIi9bcghELfph8=";
+                tag = "v${finalAttrs.version}";
+                hash = "sha256-fKN01zlQHeYZzXx6nz4iqEInGDITdPoC6uLx1guTNng=";
               };
 
-              buildInputs =
-                with rustPkgs;
-                [
-                  zlib
-                  openssl
-                ]
-                ++ lib.optionals stdenv.isDarwin [
-                  rustPkgs.darwin.apple_sdk.frameworks.Security
-                  rustPkgs.darwin.apple_sdk.frameworks.SystemConfiguration
-                ];
+              cargoHash = "sha256-TlMyDB1K+qPAHpjNWZWO8nJwdO/jndzCJqaapBqaYoo=";
+            }
+          );
 
-              nativeBuildInputs = with rustPkgs; [
-                pkg-config
-              ];
+          main = pkgs.rustPlatform.buildRustPackage (
+            sharedPackageInfo
+            // {
+              version = sharedPackageInfo.version + "+main";
+              src = pkgs.lib.cleanSource ./.;
 
-              cargoHash = "sha256-ND/F0qpqoUFsejMekO07RigTbr1SNFdb/2CNa+8KbJI=";
-            };
+              cargoLock = {
+                lockFile = ./Cargo.lock;
+              };
+            }
+          );
         }
       );
     };
