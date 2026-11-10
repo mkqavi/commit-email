@@ -31,6 +31,15 @@
               homepage = "https://github.com/mkqavi/commit-email";
               license = pkgs.lib.licenses.mit;
             };
+
+            nativeBuildInputs = with pkgs; [
+              pkg-config
+            ];
+
+            buildInputs = with pkgs; [
+              libgit2
+              zlib
+            ];
           };
         in
         {
